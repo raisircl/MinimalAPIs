@@ -3,11 +3,22 @@ using Microsoft.Data.SqlClient;
 using System.Data;  
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var conn_str = builder.Configuration.GetConnectionString("Default");
 
 //builder.Services.AddSingleton<Student>();
 
 var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapGet("/testdb", () =>
 {
