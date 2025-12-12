@@ -1,0 +1,234 @@
+{
+	"info": {
+		"_postman_id": "32750790-6177-4cb2-8698-9e90cb09b0ae",
+		"name": "MorningBatch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4246531",
+		"_collection_link": "https://sircl9.postman.co/workspace/SIRCL-Workspace~4ffbe2fa-8387-4d0e-8faa-2978a1b6c0d8/collection/4246531-32750790-6177-4cb2-8698-9e90cb09b0ae?action=share&source=collection_link&creator=4246531"
+	},
+	"item": [
+		{
+			"name": "MinimalApis",
+			"item": [
+				{
+					"name": "AllStudents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7041/students",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7041",
+							"path": [
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "StudentById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:7041/students/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7041",
+							"path": [
+								"students",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddStudent",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\":4,\r\n    \"Name\":\"Sudhir\",\r\n    \"Age\":20\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7041/students",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7041",
+							"path": [
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateStudent",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\":4,\r\n    \"Name\":\"Anil\",\r\n    \"Age\":22\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7041/students/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7041",
+							"path": [
+								"students",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteStudent",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7041/students/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7041",
+							"path": [
+								"students",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "add product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\":\"Laptop\",\r\n    \"Price\":25000.98\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7199/add-product",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7199",
+					"path": [
+						"add-product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "settings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\r\n    \"theme\": \"dark\",\r\n    \"notifications\": \"enabled\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7199/settings",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7199",
+					"path": [
+						"settings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "settings Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "User-Agent",
+						"value": "ASP CORE USER",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\r\n{\r\n\r\n    \"theme\": \"dark\",\r\n    \"notifications\": \"enabled\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:7199/device",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7199",
+					"path": [
+						"device"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
