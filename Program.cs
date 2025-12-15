@@ -1,11 +1,15 @@
 using MinimalAPIs;
 using Microsoft.Data.SqlClient;
-using System.Data;  
+using System.Data;
+using Dapper;
+using MinimalAPIs.Repos;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>(); //DI for repository
 
 var conn_str = builder.Configuration.GetConnectionString("Default");
 
@@ -19,6 +23,66 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGet("/dapartments",async (IDepartmentRepository repo)=>
+{
+    var departments=await repo.GetAllAsync();
+    return Results.Ok(departments);
+});
+app.MapGet("/dapartments/{id}",async (int id, IDepartmentRepository repo) =>
+{
+     var department=await repo.GetByIdAsync(id);        
+    if (department is null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(department);
+});
+
+app.MapPost("/dapartments",async (Department department, IDepartmentRepository repo)=>
+{
+   
+    var inserted_dept = await repo.InsertAsync(department);
+
+    department.Id=Convert.ToInt32(inserted_dept.Id);
+
+    if (department.Id > 0)
+    {
+        return Results.Created($"/dapartments/{department.Id}",department);
+    }
+    else
+    {
+        return Results.Problem("Failed to add department to the database");
+    }
+});
+
+app.MapPut("/dapartments/{id}",async (int id,Department updatedDepartment, IDepartmentRepository repo)=>
+{
+   
+    var rowsAffected = await repo.UpdateAsync(id, updatedDepartment);
+    if (rowsAffected)
+    {
+        return Results.NoContent();
+    }
+    else
+    {
+        return Results.NotFound();
+    }
+});
+
+
+app.MapDelete("/dapartments/{id}",async (int id, IDepartmentRepository repo)=>
+{
+    var rowsAffected = await repo.DeleteAsync(id);
+    if(rowsAffected)
+    {
+        return Results.NoContent();
+    }
+    else
+    {
+        return Results.Problem("Database connection failed");
+    }
+});
 
 app.MapGet("/testdb", () =>
 {
