@@ -3,19 +3,54 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using Dapper;
 using MinimalAPIs.Repos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var conn_str = builder.Configuration.GetConnectionString("Default");
+var jwtconfig = builder.Configuration.GetSection("jwt");
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>(); //DI for repository
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtconfig["Issuer"],
+            ValidAudience = jwtconfig["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtconfig["Key"]))
+        };
+    });
 
-var conn_str = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddAuthorization();    
 
 //builder.Services.AddSingleton<Student>();
 
 var app = builder.Build();
+
+app.UseCors("FrontendPolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -23,6 +58,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGet("/profile",(ClaimsPrincipal user)=>
+{
+    var userName=user.Identity?.Name;
+    var userClaims=user.Claims.Select(c=>new {c.Type,c.Value});
+    return Results.Ok( new { UserName=userName, Claims=userClaims});
+}).RequireAuthorization();
+
+app.MapGet("/admin",()=>"Welcome Admin!").RequireAuthorization(policy=>policy.RequireRole("Admin"));
 
 app.MapGet("/dapartments",async (IDepartmentRepository repo)=>
 {
